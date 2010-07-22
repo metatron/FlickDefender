@@ -9,27 +9,27 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class FlickDefenderActivity extends Activity {
-	private GLSurfaceView mGLSurfaceView;
-	
-	private AngelforestRenderer renderer;
-	
+    private GLSurfaceView mGLSurfaceView;
+
+    private AngelforestRenderer renderer;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		//full screen
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //full screen
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         mGLSurfaceView = new GLSurfaceView(this);
-        
-        renderer = new AngelforestRenderer(this);
+
+        renderer = new FlickDefenderRenderer(this);
         mGLSurfaceView.setRenderer(renderer);
-        
+
         setContentView(mGLSurfaceView);
 
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -37,18 +37,18 @@ public class FlickDefenderActivity extends Activity {
     }
 
     @Override
-	protected void onDestroy() {
-		super.onDestroy();
-		System.exit(1);
-	}
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(1);
+    }
 
-	@Override
+    @Override
     protected void onPause() {
         super.onPause();
         mGLSurfaceView.onPause();
     }
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return renderer.onTouchEvent(event);
-	}}
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return renderer.onTouchEvent(event);
+    }}
