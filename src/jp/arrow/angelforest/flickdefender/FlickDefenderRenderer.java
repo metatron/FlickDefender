@@ -3,6 +3,7 @@ package jp.arrow.angelforest.flickdefender;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
+import android.net.wifi.WifiConfiguration.Status;
 import android.util.Log;
 import android.view.MotionEvent;
 import jp.arrow.angelforest.engine.core.AngelforestRenderer;
@@ -26,15 +27,19 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
     public void onDrawFrame(GL10 gl) {
         super.onDrawFrame(gl);
 
-        FlickDefenderLogic.getInstance(context).detectCollision(bullet);
+        //TODO text display is very fuckin heavy!!
+        FlickDefenderLogic.getInstance(context).displayText(gl);
 
-        FlickDefenderLogic.getInstance(context).addEnemy();
-        FlickDefenderLogic.getInstance(context).drawEnemy();
+        if(FlickDefenderLogic.getStatus() == FlickDefenderLogic.GAME_STARTED) {
+            FlickDefenderLogic.getInstance(context).detectCollision(bullet);
+            FlickDefenderLogic.getInstance(context).addEnemy();
+            FlickDefenderLogic.getInstance(context).drawEnemy();
 
-        bullet.draw();
-        bullet.move();
+            bullet.draw();
+            bullet.move();
 
-        FlickDefenderLogic.getInstance(context).tickTimer();
+            FlickDefenderLogic.getInstance(context).tickTimer();
+        }
 
         try {
             Thread.sleep(AngelforestRenderer.GAME_REFRESHRATE);
@@ -59,6 +64,12 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
     }
 
     public boolean onTouchDownEvent(MotionEvent event) {
+        if(FlickDefenderLogic.getStatus() != FlickDefenderLogic.GAME_STARTED) {
+            FlickDefenderLogic.getInstance(context).init();
+            FlickDefenderLogic.setStatus(FlickDefenderLogic.GAME_STARTED);
+            return true;
+        }
+
         startX = event.getX();
         startY = event.getY();
 
@@ -93,7 +104,7 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
         double vx = velocity*Math.cos(frad);
         double vy = velocity*Math.sin(frad);
-        Log.e(null, "vxy: " + vx + ", " + vy);
+//        Log.e(null, "vxy: " + vx + ", " + vy);
 
         //set velocity to touched character
         bullet.setVx((int)vx);

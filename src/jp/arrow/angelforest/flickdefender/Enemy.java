@@ -5,7 +5,7 @@ import java.util.RandomAccess;
 import android.util.Log;
 
 public class Enemy extends Bullet {
-    public float MAX_ACCEL = 20.0f;
+    public float MAX_ACCEL = 25.0f;
     private float accel;
 
     private float goalX;
