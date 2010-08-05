@@ -28,6 +28,19 @@ public class SquarePolygon extends AngelForest2DEngine {
         colorBuffer = makeByteBuffer(color);
     }
 
+    public SquarePolygon(int[] color) {
+        // vertex info
+        int[] panelVertices = new int[] {
+            -one, one, 0,// 左上
+            -one, -one, 0,// 左下
+            one, one, 0,// 右上
+            one, -one, 0 // 右下
+        };
+
+        vertexBuffer = makeByteBuffer(panelVertices);
+        colorBuffer = makeByteBuffer(color);
+    }
+
     @Override
     public void draw(int x, int y, float w, float h, float angle) {
         gl.glDisable(GL10.GL_TEXTURE_2D);
@@ -43,6 +56,10 @@ public class SquarePolygon extends AngelForest2DEngine {
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 
         gl.glPopMatrix();
+    }
+
+    public void changeColor(int[] color) {
+        colorBuffer = makeByteBuffer(color);
     }
 
 }

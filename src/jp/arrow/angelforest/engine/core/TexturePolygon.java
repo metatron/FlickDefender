@@ -138,6 +138,9 @@ public class TexturePolygon extends AngelForest2DEngine {
 //		h = h * texture.size / texture.height;
         gl.glScalef(w, h, 1);
 
+        //TODO setting alpha blend
+//        gl.glColor4x(one, one, one, one/4);
+
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
         gl.glPopMatrix();
     }

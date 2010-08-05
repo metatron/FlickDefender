@@ -22,11 +22,9 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
         FlickDefenderLogic.getInstance(context).init();
     }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        super.onDrawFrame(gl);
-
+    
+	@Override
+	public void draw(GL10 gl) {
         //TODO text display is very fuckin heavy!!
         FlickDefenderLogic.getInstance(context).displayText(gl);
 
@@ -45,7 +43,13 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
             Thread.sleep(AngelforestRenderer.GAME_REFRESHRATE);
         } catch (InterruptedException e) {
         }
-    }
+	}
+
+	@Override
+	public void initTextures(GL10 gl) {
+		// TODO Auto-generated method stub
+		
+	}
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -60,7 +64,7 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
             return onTouchDragEvent(event);
         }
 
-        return super.onTouchEvent(event);
+        return true;
     }
 
     public boolean onTouchDownEvent(MotionEvent event) {
@@ -119,5 +123,4 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
         return true;
     }
-
 }

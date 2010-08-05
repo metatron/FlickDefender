@@ -178,7 +178,7 @@ public class FlickDefenderLogic {
         canvas.drawText(tickStr, 0, (int)-textPaint.ascent(), textPaint);
         //load text
         textTexture = new TexturePolygon(context, bitmap);
-        textTexture.draw(FlickDefenderLogic.SCREEN_WIDTH/2, FlickDefenderLogic.SCREEN_HEIGHT/2, 180);
+        textTexture.draw(FlickDefenderLogic.SCREEN_WIDTH/2, FlickDefenderLogic.SCREEN_HEIGHT/2);
         textTexture.delete();
     }
 
@@ -201,7 +201,7 @@ public class FlickDefenderLogic {
 
         //load text
         textTexture = new TexturePolygon(context, bitmap);
-        textTexture.draw(40, 20, 180);
+        textTexture.draw(40, 20);
         textTexture.delete();
     }
 
