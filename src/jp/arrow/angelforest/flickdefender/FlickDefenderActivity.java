@@ -10,9 +10,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class FlickDefenderActivity extends AngelForestOpenGLActivity {
-	
+
 	@Override
 	protected void setRenderer() {
-        renderer = new FlickDefenderRenderer(this);
+		renderer = new FlickDefenderRenderer(this);
 	}
 }
