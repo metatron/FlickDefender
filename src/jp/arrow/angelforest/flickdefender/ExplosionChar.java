@@ -13,16 +13,16 @@ public class ExplosionChar {
 	public static final int EXPLOSION_INIT = 0;
 	public static final int EXPLOSION_STARTED = 1;
 	public static final int EXPLOSION_FINISHED = 2;
-	
+
 	private static ArrayList<TexturePolygon> textureList = null;
 	private static int textureNum;
 	private int currentPos = 0;
 	private int status = EXPLOSION_INIT;
 	private int x;
 	private int y;
-	
+
 	public ExplosionChar(Context context, int x, int y) {
-		if(textureList == null) {
+		if (textureList == null) {
 			textureList = new ArrayList<TexturePolygon>();
 			textureList.add(new TexturePolygon(context, R.drawable.explode_0));
 			textureList.add(new TexturePolygon(context, R.drawable.explode_1));
@@ -37,25 +37,24 @@ public class ExplosionChar {
 		this.y = y;
 		currentPos = 0;
 	}
-	
+
 	public synchronized void draw() {
-		if(status != EXPLOSION_FINISHED) {
+		if (status != EXPLOSION_FINISHED) {
 			textureList.get(currentPos).draw(x, y);
 		}
 	}
-	
+
 	public void incrementPos() {
-		if(currentPos < textureList.size()-1) {
+		if (currentPos < textureList.size() - 1) {
 			currentPos++;
 			status = EXPLOSION_STARTED;
-		}
-		else {
+		} else {
 			status = EXPLOSION_FINISHED;
 		}
 	}
-	
+
 	public boolean isFinished() {
-		if(status == EXPLOSION_FINISHED) {
+		if (status == EXPLOSION_FINISHED) {
 			return true;
 		}
 		return false;

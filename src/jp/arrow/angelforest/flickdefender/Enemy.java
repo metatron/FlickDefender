@@ -2,6 +2,9 @@ package jp.arrow.angelforest.flickdefender;
 
 import java.util.RandomAccess;
 
+import jp.arrow.angelforest.engine.core.TexturePolygon;
+
+import android.content.Context;
 import android.util.Log;
 
 public class Enemy extends Bullet {
@@ -11,7 +14,21 @@ public class Enemy extends Bullet {
 	private float goalX;
 	private float goalY;
 
-	public Enemy() {
+	public Enemy(TexturePolygon textPoly, double[] enlargeRatio) {
+		super(textPoly, enlargeRatio);
+		w = 15;
+		h = 15;
+		w = (int)(w*enlargeRatio[0]);
+		h = (int)(h*enlargeRatio[1]);
+		
+		r = 20;
+		if(enlargeRatio[0] < enlargeRatio[1]) {
+			r = (int)(r*enlargeRatio[0]);
+		}
+		else {
+			r = (int)(r*enlargeRatio[1]);
+		}
+		
 		reset();
 	}
 

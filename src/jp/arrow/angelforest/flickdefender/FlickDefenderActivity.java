@@ -15,4 +15,10 @@ public class FlickDefenderActivity extends AngelForestOpenGLActivity {
 	protected void setRenderer() {
 		renderer = new FlickDefenderRenderer(this);
 	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		System.exit(1);
+	}
 }

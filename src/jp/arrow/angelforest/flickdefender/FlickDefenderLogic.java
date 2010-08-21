@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import jp.angelforest.engine.util.SizeConvertRatio;
 import jp.arrow.angelforest.engine.core.TextureLoader;
 import jp.arrow.angelforest.engine.core.TexturePolygon;
 
@@ -33,9 +34,12 @@ public class FlickDefenderLogic {
 	public static final int GAME_OVER = 2;
 	private static int status = GAME_READY;
 
-	private List<Enemy> enemyList = Collections.synchronizedList(new ArrayList<Enemy>());
-	private List<Bullet> bulletList = Collections.synchronizedList(new ArrayList<Bullet>());
-	private List<ExplosionChar> explodeList = Collections.synchronizedList(new ArrayList<ExplosionChar>());
+	private List<Enemy> enemyList = Collections
+			.synchronizedList(new ArrayList<Enemy>());
+	private List<Bullet> bulletList = Collections
+			.synchronizedList(new ArrayList<Bullet>());
+	private List<ExplosionChar> explodeList = Collections
+			.synchronizedList(new ArrayList<ExplosionChar>());
 
 	public static int DEFAULT_LEVEL_TIMING = 50;
 	public static int HIGHTEST_LEVEL_TIMING = 10;
@@ -81,16 +85,16 @@ public class FlickDefenderLogic {
 		ADD_ENEMY_TIMING = DEFAULT_LEVEL_TIMING;
 	}
 
-	public synchronized void addEnemy() {
+	public synchronized void addEnemy(TexturePolygon textPoly) {
 		if (tick % ADD_ENEMY_TIMING == 0) {
-			//then add
-			enemyList.add(new Enemy());
+			// then add
+			enemyList.add(new Enemy(textPoly, SizeConvertRatio.getRatio()));
 		}
 	}
-
-	public synchronized void drawEnemies() {
-		for(int i=0; i<enemyList.size(); i++) {
-//			for (Enemy enemy : enemyList) {
+	
+	public void drawEnemies() {
+		for (int i = 0; i < enemyList.size(); i++) {
+			// for (Enemy enemy : enemyList) {
 			Enemy enemy = enemyList.get(i);
 			if (enemy != null && !enemy.isDead()) {
 				enemy.draw();
@@ -99,93 +103,94 @@ public class FlickDefenderLogic {
 				// detect dead
 				detectHpDown(enemy);
 				enemy.detectDead(context);
-			}
-			else {
+			} else {
 				synchronized (enemyList) {
 					enemyList.remove(enemy);
 				}
 			}
 		}
 	}
-	
+
 	public synchronized void addBullet(Bullet bullet) {
-		//and add new bullet
+		// and add new bullet
 		bulletList.add(bullet);
-		
-//		Log.e(null, "size of bulletList: " + bulletList.size());
+
+		// Log.e(null, "size of bulletList: " + bulletList.size());
 	}
-	
-	public synchronized void drawBullets() {
-		for(int i=0; i<bulletList.size(); i++) {
+
+	public void drawBullets() {
+		for (int i = 0; i < bulletList.size(); i++) {
 			Bullet bullet = bulletList.get(i);
-			
+
 			if (bullet != null && !bullet.isDead()) {
 				bullet.draw();
 				bullet.move();
 
 				// detect dead
 				bullet.detectDead(context);
-			}
-			else {
+			} else {
 				synchronized (bulletList) {
 					bulletList.remove(bullet);
 				}
 			}
 		}
 	}
-	
-	public synchronized void drawExplodes() {
-//		for(ExplosionChar explode: explodeList) {
-		for(int i=0; i<explodeList.size(); i++) {
+
+	public void drawExplodes() {
+		// for(ExplosionChar explode: explodeList) {
+		for (int i = 0; i < explodeList.size(); i++) {
 			ExplosionChar explode = explodeList.get(i);
-//			Log.e(null,"explode (" + i + ") status: " + explode.getStatus() + "; x: " + explode.getX() + "y: " + explode.getY());
-			
+			// Log.e(null,"explode (" + i + ") status: " + explode.getStatus() +
+			// "; x: " + explode.getX() + "y: " + explode.getY());
+
 			if (explode != null && !explode.isFinished()) {
 				explode.draw();
 				explode.incrementPos();
-			}
-			else {
+			} else {
 				synchronized (explodeList) {
 					explodeList.remove(explode);
 				}
 			}
 		}
 	}
-	
+
 	public synchronized void addExplode(ExplosionChar explode) {
-		//check for animation finished characters and remove it
-//		for(int i=0; i<explodeList.size(); i++) {
-//			ExplosionChar exp = explodeList.get(i);
-//			if(exp.isFinished()) {
-//				explodeList.remove(i);
-//			}
-//		}
-		
-		//after the removal add new one
+		// check for animation finished characters and remove it
+		// for(int i=0; i<explodeList.size(); i++) {
+		// ExplosionChar exp = explodeList.get(i);
+		// if(exp.isFinished()) {
+		// explodeList.remove(i);
+		// }
+		// }
+
+		// after the removal add new one
 		explodeList.add(explode);
-		
-//		Log.e(null, "size of explodes: " + explodeList.size());
-//		for(int i=0; i<explodeList.size(); i++) {
-//			ExplosionChar exp = explodeList.get(i);
-//			Log.e(null, "pos: " + i + ", exp: " + exp + " status: " + exp.getStatus() + " currentpos: " + exp.getCurrentPos());
-//		}
-//		Log.e(null,"adding explode, status: " + explode.getStatus() + "; x: " + explode.getX() + " y: " + explode.getY());
+
+		// Log.e(null, "size of explodes: " + explodeList.size());
+		// for(int i=0; i<explodeList.size(); i++) {
+		// ExplosionChar exp = explodeList.get(i);
+		// Log.e(null, "pos: " + i + ", exp: " + exp + " status: " +
+		// exp.getStatus() + " currentpos: " + exp.getCurrentPos());
+		// }
+		// Log.e(null,"adding explode, status: " + explode.getStatus() + "; x: "
+		// + explode.getX() + " y: " + explode.getY());
 	}
-	
-	public synchronized void detectCollision(Bullet bullet) {
+
+	public void detectCollision(Bullet bullet) {
 		for (Enemy enemy : enemyList) {
 			if (enemy != null && !enemy.isDead()) {
-				boolean iscollide = squareCollisionLogic(enemy, bullet);
+//				boolean iscollide = squareCollisionLogic(enemy, bullet);
+				boolean iscollide = circularCollisionLogic(enemy, bullet);
 				if (iscollide) {
 					// Log.e(null, "collision!");
 					// set deads and decrease timing
 					enemy.setDead(true);
 					bullet.setDead(true);
-					
-					//add explode animation
+
+					// add explode animation
 					FlickDefenderLogic.getInstance(context).addExplode(
-							new ExplosionChar(context, (int)enemy.getX(), (int)enemy.getY())
-							);
+							new ExplosionChar(context, (int) enemy.getX(),
+									(int) enemy.getY()));
 
 					// increment score
 					defended++;
@@ -199,30 +204,29 @@ public class FlickDefenderLogic {
 
 		}
 	}
-	
+
 	/**
-	 * for multiple bullet detection, use this method.
-	 * the bullet will be added when user touch the screen.
+	 * for multiple bullet detection, use this method. the bullet will be added
+	 * when user touch the screen.
 	 * 
 	 */
 	public synchronized void detectCollisionPerBullet() {
-		for(Bullet bullet: bulletList) {
-			if(bullet != null && !bullet.isDead()) {
+		for (Bullet bullet : bulletList) {
+			if (bullet != null && !bullet.isDead()) {
 				detectCollision(bullet);
 			}
 		}
 	}
-	
+
 	/**
-	 * square collision detection logic.
-	 * change or add collition detection logic, such as circular,
-	 * and change detectColligion method.
+	 * square collision detection logic. change or add collition detection
+	 * logic, such as circular, and change detectColligion method.
 	 * 
 	 * @param enemy
 	 * @param bullet
 	 * @return
 	 */
-	public synchronized boolean squareCollisionLogic(Enemy enemy, Bullet bullet) {
+	public boolean squareCollisionLogic(Enemy enemy, Bullet bullet) {
 		float enemyLeft = enemy.getX() - enemy.getW();
 		float enemyRight = enemy.getX() + enemy.getW();
 		float enemyTop = enemy.getY() - enemy.getH();
@@ -235,14 +239,20 @@ public class FlickDefenderLogic {
 
 		// testsquare.draw((int)bulletLeft, (int)bulletTop, 1, 1, 0);
 
-		boolean iscollide = enemyLeft < bulletRight
-				&& bulletLeft < enemyRight && bulletTop < enemyBottom
-				&& enemyTop < bulletBottom;
+		boolean iscollide = enemyLeft < bulletRight && bulletLeft < enemyRight
+				&& bulletTop < enemyBottom && enemyTop < bulletBottom;
 		// Log.e(null, "bullet: " + bullet.getX() + ", " + bullet.getY()
 		// + " enemy: " + enemy.getX() + ", " + enemy.getY() + " :: " +
 		// iscollide);
-		
+
 		return iscollide;
+	}
+	
+	public boolean circularCollisionLogic(Enemy enemy, Bullet bullet) {
+		if(Math.pow(enemy.getX()-bullet.getX(),2)+Math.pow(enemy.getY()-bullet.getY(),2) < Math.pow(enemy.getR()+bullet.getR(), 2)) {
+			return true;
+		}
+		return false;
 	}
 
 	private void detectHpDown(Enemy enemy) {

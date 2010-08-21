@@ -1,5 +1,6 @@
 package jp.arrow.angelforest.engine.core;
 
+import jp.angelforest.engine.util.SizeConvertRatio;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -28,6 +29,9 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 		// full screen
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		//for resizing the image by screen, this function is needed.
+		SizeConvertRatio.getInstance().calculate(this);
 
 		mGLSurfaceView = new GLSurfaceView(this);
 

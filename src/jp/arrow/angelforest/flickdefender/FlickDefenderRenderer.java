@@ -1,12 +1,17 @@
 package jp.arrow.angelforest.flickdefender;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.net.wifi.WifiConfiguration.Status;
 import android.util.Log;
 import android.view.MotionEvent;
+import jp.angelforest.engine.util.SizeConvertRatio;
 import jp.arrow.angelforest.engine.core.AngelforestRenderer;
+import jp.arrow.angelforest.engine.core.TexturePolygon;
 
 public class FlickDefenderRenderer extends AngelforestRenderer {
 	private float startX;
@@ -14,13 +19,12 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
 	private Bullet bullet;
 	private Context context;
+	
+	private HashMap<Integer, TexturePolygon> textPolyMap = new HashMap<Integer, TexturePolygon>();
 
 	public FlickDefenderRenderer(Context context) {
 		super(context);
 		this.context = context;
-		bullet = new Bullet();
-
-		FlickDefenderLogic.getInstance(context).init();
 	}
 
 	@Override
@@ -29,15 +33,15 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 		FlickDefenderLogic.getInstance(context).displayText(gl);
 
 		if (FlickDefenderLogic.getStatus() == FlickDefenderLogic.GAME_STARTED) {
-//			FlickDefenderLogic.getInstance(context).detectCollision(bullet);
+			// FlickDefenderLogic.getInstance(context).detectCollision(bullet);
 			FlickDefenderLogic.getInstance(context).detectCollisionPerBullet();
-			FlickDefenderLogic.getInstance(context).addEnemy();
+			FlickDefenderLogic.getInstance(context).addEnemy(chooseEnemyTexture());
 			FlickDefenderLogic.getInstance(context).drawEnemies();
 
-//			bullet.draw();
-//			bullet.move();
+			// bullet.draw();
+			// bullet.move();
 			FlickDefenderLogic.getInstance(context).drawBullets();
-			
+
 			FlickDefenderLogic.getInstance(context).drawExplodes();
 
 			FlickDefenderLogic.getInstance(context).tickTimer();
@@ -48,11 +52,23 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 		} catch (InterruptedException e) {
 		}
 	}
+	
+	private TexturePolygon chooseEnemyTexture() {
+		if(System.currentTimeMillis()%2 == 0) {
+			return textPolyMap.get(R.drawable.yukkuri_reimu);
+		}
+		return textPolyMap.get(R.drawable.yukkuri_marisa);
+	}
 
 	@Override
 	public void initTextures(GL10 gl) {
-		// TODO Auto-generated method stub
-
+		//init texture map
+		textPolyMap.put(R.drawable.bulletball, new TexturePolygon(context, R.drawable.bulletball));
+		textPolyMap.put(R.drawable.yukkuri_reimu, new TexturePolygon(context, R.drawable.yukkuri_reimu));
+		textPolyMap.put(R.drawable.yukkuri_marisa, new TexturePolygon(context, R.drawable.yukkuri_marisa));
+		
+		bullet = new Bullet(textPolyMap.get(R.drawable.bulletball), SizeConvertRatio.getRatio());
+		FlickDefenderLogic.getInstance(context).init();
 	}
 
 	@Override
@@ -81,11 +97,11 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 		startX = event.getX();
 		startY = event.getY();
 
-		bullet = new Bullet();
+		bullet = new Bullet(textPolyMap.get(R.drawable.bulletball), SizeConvertRatio.getRatio());
 		bullet.reset();
 		bullet.setX(startX);
 		bullet.setY(startY);
-		
+
 		FlickDefenderLogic.getInstance(context).addBullet(bullet);
 
 		return true;
@@ -129,7 +145,11 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 		// if(vx > 0 || vy > 0) {
 		// flickingCharacter.setStatus(FlickCharacter.STATUS_FLICK_START);
 		// }
-		
+
 		return true;
+	}
+
+	public HashMap<Integer, TexturePolygon> getTextPolyMap() {
+		return textPolyMap;
 	}
 }
