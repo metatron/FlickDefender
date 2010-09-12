@@ -18,7 +18,7 @@ import android.view.MotionEvent;
  * 
  */
 public abstract class AngelforestRenderer implements Renderer {
-	public static int GAME_REFRESHRATE = 25;
+	public static int GAME_REFRESHRATE = 20;
 	private Context context;
 
 	public AngelforestRenderer(Context context) {

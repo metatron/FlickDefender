@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout android:id="@+id/TableLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="  Game Level"></TextView><RadioGroup android:id="@+id/RadioGroup01" android:layout_width="wrap_content" android:layout_height="wrap_content"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Normal" android:id="@+id/NormalRadioButton" android:checked="true"></RadioButton>
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hard" android:id="@+id/HardRadioButton"></RadioButton>
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hardest" android:id="@+id/HardestRadioButton"></RadioButton>
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lunatic" android:id="@+id/LunaticRadioButton"></RadioButton>
+
+
+</RadioGroup><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OK" android:id="@+id/OptionOKButton"></Button>
+</TableLayout>

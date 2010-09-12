@@ -32,7 +32,13 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 		
 		//for resizing the image by screen, this function is needed.
 		SizeConvertRatio.getInstance().calculate(this);
+		
+		//initGame
+//		initGame();
 
+	}
+	
+	public void initGame() {
 		mGLSurfaceView = new GLSurfaceView(this);
 
 		// renderer = new FlickDefenderRenderer(this);
@@ -41,7 +47,6 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 		mGLSurfaceView.setRenderer(renderer);
 
 		setContentView(mGLSurfaceView);
-
 	}
 
 	/**
@@ -53,7 +58,9 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mGLSurfaceView.onResume();
+		if(mGLSurfaceView != null) {
+			mGLSurfaceView.onResume();
+		}
 	}
 
 	@Override
@@ -65,11 +72,16 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		mGLSurfaceView.onPause();
+		if(mGLSurfaceView != null) {
+			mGLSurfaceView.onPause();
+		}
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		return renderer.onTouchEvent(event);
+		if(renderer != null) {
+			return renderer.onTouchEvent(event);
+		}
+		return true;
 	}
 }

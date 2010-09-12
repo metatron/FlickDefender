@@ -34,15 +34,18 @@ public class FlickDefenderLogic {
 	public static final int GAME_OVER = 2;
 	private static int status = GAME_READY;
 
-	private List<Enemy> enemyList = Collections
-			.synchronizedList(new ArrayList<Enemy>());
-	private List<Bullet> bulletList = Collections
-			.synchronizedList(new ArrayList<Bullet>());
-	private List<ExplosionChar> explodeList = Collections
-			.synchronizedList(new ArrayList<ExplosionChar>());
+//	private List<Enemy> enemyList = Collections.synchronizedList(new ArrayList<Enemy>());
+//	private List<Bullet> bulletList = Collections.synchronizedList(new ArrayList<Bullet>());
+//	private List<ExplosionChar> explodeList = Collections.synchronizedList(new ArrayList<ExplosionChar>());
 
+	private List<Enemy> enemyList = new ArrayList<Enemy>();
+	private List<Bullet> bulletList = new ArrayList<Bullet>();
+	private List<ExplosionChar> explodeList = new ArrayList<ExplosionChar>();
+
+	//for gradually increase the timing of enemy addition.
 	public static int DEFAULT_LEVEL_TIMING = 50;
 	public static int HIGHTEST_LEVEL_TIMING = 10;
+	
 	public static int ADD_ENEMY_TIMING = DEFAULT_LEVEL_TIMING;
 	private int tick;
 
@@ -81,14 +84,18 @@ public class FlickDefenderLogic {
 		enemyList.clear();
 		hp = MAX_HP;
 		defended = 0;
-		status = GAME_READY;
+		status = GAME_STARTED; //GAME_READY;
+		
 		ADD_ENEMY_TIMING = DEFAULT_LEVEL_TIMING;
 	}
 
 	public synchronized void addEnemy(TexturePolygon textPoly) {
 		if (tick % ADD_ENEMY_TIMING == 0) {
 			// then add
-			enemyList.add(new Enemy(textPoly, SizeConvertRatio.getRatio()));
+			int itr = GameParameters.getInstance().currentLvl;
+			for(int i=0; i<itr; i++) {
+				enemyList.add(new Enemy(textPoly, SizeConvertRatio.getRatio()));
+			}
 		}
 	}
 	
@@ -113,7 +120,9 @@ public class FlickDefenderLogic {
 
 	public synchronized void addBullet(Bullet bullet) {
 		// and add new bullet
-		bulletList.add(bullet);
+		if(bulletList.size() < GameParameters.getInstance().maxBulletAllowed) {
+			bulletList.add(bullet);
+		}
 
 		// Log.e(null, "size of bulletList: " + bulletList.size());
 	}
@@ -155,25 +164,8 @@ public class FlickDefenderLogic {
 	}
 
 	public synchronized void addExplode(ExplosionChar explode) {
-		// check for animation finished characters and remove it
-		// for(int i=0; i<explodeList.size(); i++) {
-		// ExplosionChar exp = explodeList.get(i);
-		// if(exp.isFinished()) {
-		// explodeList.remove(i);
-		// }
-		// }
-
 		// after the removal add new one
 		explodeList.add(explode);
-
-		// Log.e(null, "size of explodes: " + explodeList.size());
-		// for(int i=0; i<explodeList.size(); i++) {
-		// ExplosionChar exp = explodeList.get(i);
-		// Log.e(null, "pos: " + i + ", exp: " + exp + " status: " +
-		// exp.getStatus() + " currentpos: " + exp.getCurrentPos());
-		// }
-		// Log.e(null,"adding explode, status: " + explode.getStatus() + "; x: "
-		// + explode.getX() + " y: " + explode.getY());
 	}
 
 	public void detectCollision(Bullet bullet) {

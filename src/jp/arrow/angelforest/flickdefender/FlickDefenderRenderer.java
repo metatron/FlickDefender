@@ -38,8 +38,6 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 			FlickDefenderLogic.getInstance(context).addEnemy(chooseEnemyTexture());
 			FlickDefenderLogic.getInstance(context).drawEnemies();
 
-			// bullet.draw();
-			// bullet.move();
 			FlickDefenderLogic.getInstance(context).drawBullets();
 
 			FlickDefenderLogic.getInstance(context).drawExplodes();
@@ -60,6 +58,10 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 		return textPolyMap.get(R.drawable.yukkuri_marisa);
 	}
 
+	/**
+	 * Initialize all the textures such as bullet, enemies.
+	 * 
+	 */
 	@Override
 	public void initTextures(GL10 gl) {
 		//init texture map
