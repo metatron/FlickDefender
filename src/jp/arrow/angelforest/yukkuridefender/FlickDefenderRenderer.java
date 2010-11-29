@@ -1,30 +1,44 @@
-package jp.arrow.angelforest.flickdefender;
+package jp.arrow.angelforest.yukkuridefender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.wifi.WifiConfiguration.Status;
+import android.opengl.GLSurfaceView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.Surface.OutOfResourcesException;
 import jp.angelforest.engine.util.SizeConvertRatio;
+import jp.arrow.angelforest.engine.core.AngelForestOpenGLActivity;
 import jp.arrow.angelforest.engine.core.AngelforestRenderer;
 import jp.arrow.angelforest.engine.core.TexturePolygon;
+import jp.arrow.angelforest.yukkuridefender.R;
+import jp.arrow.angelforest.yukkuridefender.pages.MainPage;
 
 public class FlickDefenderRenderer extends AngelforestRenderer {
+	public static double VELOCITY_FIX = 3d;
+	
 	private float startX;
 	private float startY;
 
 	private Bullet bullet;
 	private Context context;
-	
 	private HashMap<Integer, TexturePolygon> textPolyMap = new HashMap<Integer, TexturePolygon>();
 
 	public FlickDefenderRenderer(Context context) {
 		super(context);
 		this.context = context;
+		
+		//delete all textures
+		deleteTextures();
 	}
 
 	@Override
@@ -43,11 +57,6 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 			FlickDefenderLogic.getInstance(context).drawExplodes();
 
 			FlickDefenderLogic.getInstance(context).tickTimer();
-		}
-
-		try {
-			Thread.sleep(AngelforestRenderer.GAME_REFRESHRATE);
-		} catch (InterruptedException e) {
 		}
 	}
 	
@@ -91,8 +100,11 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
 	public boolean onTouchDownEvent(MotionEvent event) {
 		if (FlickDefenderLogic.getStatus() != FlickDefenderLogic.GAME_STARTED) {
-			FlickDefenderLogic.getInstance(context).init();
-			FlickDefenderLogic.setStatus(FlickDefenderLogic.GAME_STARTED);
+			//if game over, wait for a while be4 restart the game
+			if(FlickDefenderLogic.getStatus() == FlickDefenderLogic.GAME_OVER && FlickDefenderLogic.getInstance(context).checkForRestartGame()) {
+				FlickDefenderLogic.getInstance(context).init();
+				FlickDefenderLogic.setStatus(FlickDefenderLogic.GAME_STARTED);
+			}
 			return true;
 		}
 
@@ -135,6 +147,11 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
 		double vx = velocity * Math.cos(frad);
 		double vy = velocity * Math.sin(frad);
+		
+		//fix the velocity (default is too fast)
+		vx /= VELOCITY_FIX;
+		vy /= VELOCITY_FIX;
+		
 		// Log.e(null, "vxy: " + vx + ", " + vy);
 
 		// set velocity to touched character
@@ -150,8 +167,35 @@ public class FlickDefenderRenderer extends AngelforestRenderer {
 
 		return true;
 	}
-
+	
 	public HashMap<Integer, TexturePolygon> getTextPolyMap() {
 		return textPolyMap;
+	}
+	
+	public void deleteTextures() {
+		//delete textures
+		if(textPolyMap.get(R.drawable.bulletball) != null) {
+			textPolyMap.get(R.drawable.bulletball).delete();
+		}
+		if(textPolyMap.get(R.drawable.yukkuri_reimu) != null) {
+			textPolyMap.get(R.drawable.yukkuri_reimu).delete();
+		}
+		if(textPolyMap.get(R.drawable.yukkuri_marisa) != null) {
+			textPolyMap.get(R.drawable.yukkuri_marisa).delete();
+		}
+		
+		//delete explode animations
+		ExplosionChar.deleteExplodeChars();
+	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+			//back to main menu
+			if(FlickDefenderLogic.getStatus() == FlickDefenderLogic.GAME_STARTED || FlickDefenderLogic.getStatus() == FlickDefenderLogic.GAME_OVER) {
+				//back to main menu
+				MainPage.getInstance((Activity)this.context);
+			}
+		}
+		return true;
 	}
 }

@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:angelapp="http://schemas.android.com/apk/res/jp.arrow.angelforest.yukkuridefender"
+
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+    android:layout_height="fill_parent" android:background="@android:color/white">
 
-<Button android:id="@+id/Button01" android:text="Start Game" android:layout_height="wrap_content" android:layout_width="fill_parent"></Button>
-<Button android:id="@+id/Button02" android:layout_height="wrap_content" android:text="Option" android:layout_width="fill_parent"></Button>
+<ImageView android:id="@+id/ImageView01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:background="@drawable/yukkuri_defender_title"></ImageView><Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/StartGameButton" android:text="@string/MainButtonStart"></Button>
+<Button android:layout_height="wrap_content" android:id="@+id/StartShopButton" android:layout_width="fill_parent" android:text="@string/MainButtonShop"></Button><Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/StartOptionButton" android:text="@string/MainButtonOption"></Button>
+
+<com.admob.android.ads.AdView     
+           android:id="@+id/ad" 
+           android:layout_width="fill_parent" 
+           android:layout_height="wrap_content"
+           angelapp:backgroundColor="#000000"
+           angelapp:primaryTextColor="#FFFFFF"
+           angelapp:secondaryTextColor="#CCCCCC"
+  />
+
 </LinearLayout>

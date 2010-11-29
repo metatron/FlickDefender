@@ -14,7 +14,7 @@ public abstract class AngelForest2DEngine {
 	protected IntBuffer vertexBuffer;
 	protected IntBuffer colorBuffer;
 
-	private boolean isDeleted = false;
+	protected boolean isDeleted = false;
 
 	// 初期化
 	public static void init(GL10 gl, int w, int h) {

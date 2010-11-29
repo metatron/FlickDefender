@@ -1,4 +1,4 @@
-package jp.arrow.angelforest.flickdefender;
+package jp.arrow.angelforest.yukkuridefender;
 
 import android.app.Activity;
 import android.app.Application;
@@ -8,7 +8,7 @@ import android.util.Log;
 import jp.arrow.angelforest.engine.core.SquarePolygon;
 import jp.arrow.angelforest.engine.core.TexturePolygon;
 
-public class Bullet {
+public class Bullet extends CharacterStatus {
 	protected int w;
 	protected int h;
 	
@@ -21,7 +21,7 @@ public class Bullet {
 	protected float vy;
 
 //	private SquarePolygon square;
-	private TexturePolygon textPoly = null;
+	protected TexturePolygon textPoly = null;
 
 	protected boolean isDead = false;
 
@@ -33,21 +33,30 @@ public class Bullet {
 		w = (int)(w*enlargeRatio[0]);
 		h = (int)(h*enlargeRatio[1]);
 		
-		r = 12;
+		r = 13;
 		if(enlargeRatio[0] < enlargeRatio[1]) {
 			r = (int)(r*enlargeRatio[0]);
 		}
 		else {
 			r = (int)(r*enlargeRatio[1]);
 		}
+		
+		//resize it
+		w = (int)(w*GameParameters.getInstance().currentBulletSize);
+		h = (int)(h*GameParameters.getInstance().currentBulletSize);
+		r = (int)(r*GameParameters.getInstance().currentBulletSize);
 
 		// loading texture
 		this.textPoly = textPoly; //new TexturePolygon(context, R.drawable.bulletball);
+		
+		//init hp and str
+		setOriginal(GameParameters.getInstance().currentBulletLife, GameParameters.getInstance().currentBulletPower);
 	}
 
 	public void draw() {
 		if (!isDead) {
-			textPoly.draw((int)x, (int)y);
+//			textPoly.draw((int)x, (int)y);
+			textPoly.draw((int)x, (int)y, (float)GameParameters.getInstance().currentBulletSize, (float)GameParameters.getInstance().currentBulletSize, 0.0f);			
 //			square.draw((int) x, (int) y, w, h, 0);
 		}
 	}
@@ -65,6 +74,9 @@ public class Bullet {
 		vx = 0;
 		vy = 0;
 		isDead = false;
+		
+		//init status
+		initCharStatus();
 	}
 
 	public synchronized void detectDead(Context context) {

@@ -1,4 +1,4 @@
-package jp.arrow.angelforest.flickdefender;
+package jp.arrow.angelforest.yukkuridefender;
 
 import java.util.RandomAccess;
 
@@ -13,6 +13,8 @@ public class Enemy extends Bullet {
 
 	private float goalX;
 	private float goalY;
+	
+	protected int score=GameParameters.ENEMY_SCORE;
 
 	public Enemy(TexturePolygon textPoly, double[] enlargeRatio) {
 		super(textPoly, enlargeRatio);
@@ -31,6 +33,15 @@ public class Enemy extends Bullet {
 		
 		reset();
 	}
+	
+	@Override
+	public void draw() {
+		if (!isDead) {
+			textPoly.draw((int)x, (int)y);
+//			square.draw((int) x, (int) y, w, h, 0);
+		}
+	}
+
 
 	@Override
 	public void reset() {
@@ -39,7 +50,7 @@ public class Enemy extends Bullet {
 		x = (float) ((FlickDefenderLogic.SCREEN_WIDTH - 1) * Math.random() + 1);
 		y = 10.0f * (float) Math.random();
 		goalX = (float) ((FlickDefenderLogic.SCREEN_WIDTH - 1) * Math.random() + 1);
-		goalY = (float) ((100) * Math.random() + 400);
+		goalY = (float) ((100) * Math.random() + (FlickDefenderLogic.SCREEN_WIDTH-100));
 
 		accel = (float) ((MAX_ACCEL - 1) * Math.random() + 1);
 
@@ -48,7 +59,14 @@ public class Enemy extends Bullet {
 
 		vx = (float) (accel * Math.cos(frad));
 		vy = (float) (accel * Math.sin(frad));
-
+		
+		//init hp and str
+		setOriginal(GameParameters.getInstance().currentEnemyHp, GameParameters.getInstance().currentEnemyStr);
+		
 		isDead = false;
+	}
+	
+	public int getScore() {
+		return score;
 	}
 }

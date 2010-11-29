@@ -1,8 +1,16 @@
-package jp.arrow.angelforest.flickdefender.pages;
+package jp.arrow.angelforest.yukkuridefender.pages;
 
-import jp.arrow.angelforest.flickdefender.GameParameters;
-import jp.arrow.angelforest.flickdefender.R;
+import java.io.File;
+
+import jp.arrow.angelforest.yukkuridefender.R;
+import jp.arrow.angelforest.yukkuridefender.FlickDefenderActivity;
+import jp.arrow.angelforest.yukkuridefender.GameParameters;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -56,6 +64,26 @@ public class OptionPage {
 				GameParameters.getInstance().maxBulletAllowed = GameParameters.BULLET_MAX_LUNATIC;
 			}
 		});
+		
+		//Reset status button
+		Button resetStatusButton = (Button)(activity.findViewById(R.id.ButtonStatusReset));
+		resetStatusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				GameParameters.getInstance().currentTotalMoney = 0;
+				GameParameters.OPTION_BULLET_NUMBER = 0;
+				GameParameters.OPTION_BULLET_SIZE = 0.0d;
+				GameParameters.OPTION_BULLET_POWER = 0;
+				GameParameters.OPTION_BULLET_LIFE = 0;
+				GameParameters.OPTION_LIFE = 0;
+				//save status
+				String db_dir = Environment.getDataDirectory() + "/data/" + GameParameters.PACKAGE_NAME + "/databases/";
+				File db_file = new File(db_dir);
+				db_file.delete();
+//				FlickDefenderActivity.saveCurrentStatus();
+			}
+		});
+
 		
 		//ok button pressed
 		Button okBtn = (Button)(activity.findViewById(R.id.OptionOKButton));

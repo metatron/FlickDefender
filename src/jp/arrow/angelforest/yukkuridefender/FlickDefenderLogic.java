@@ -1,4 +1,4 @@
-package jp.arrow.angelforest.flickdefender;
+package jp.arrow.angelforest.yukkuridefender;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,14 +46,17 @@ public class FlickDefenderLogic {
 	public static int DEFAULT_LEVEL_TIMING = 50;
 	public static int HIGHTEST_LEVEL_TIMING = 10;
 	
+	//for the game over detection, it uses millisecond method.
+	public static long GAME_OVER_CLICK_ENABLED_TIMING = 1500l;
+	private long gameOverStart = 0l;
+	
 	public static int ADD_ENEMY_TIMING = DEFAULT_LEVEL_TIMING;
 	private int tick;
 
 	private static Paint textPaint;
 	private TexturePolygon textTexture;
 
-	public static final int MAX_HP = 10;
-	private static int hp = MAX_HP;
+	private static int hp = 0;
 	private static int defended = 0;
 
 	public static FlickDefenderLogic getInstance(Context context) {
@@ -81,20 +84,28 @@ public class FlickDefenderLogic {
 
 	// -------------- logic ----------------//
 	public void init() {
+		//clear lists
 		enemyList.clear();
-		hp = MAX_HP;
+		bulletList.clear();
+		explodeList.clear();
+		textTexture = null;
+		
+		
+		hp = GameParameters.getInstance().currentHp;
 		defended = 0;
 		status = GAME_STARTED; //GAME_READY;
 		
 		ADD_ENEMY_TIMING = DEFAULT_LEVEL_TIMING;
 	}
 
-	public synchronized void addEnemy(TexturePolygon textPoly) {
+	public void addEnemy(TexturePolygon textPoly) {
 		if (tick % ADD_ENEMY_TIMING == 0) {
 			// then add
 			int itr = GameParameters.getInstance().currentLvl;
-			for(int i=0; i<itr; i++) {
-				enemyList.add(new Enemy(textPoly, SizeConvertRatio.getRatio()));
+			synchronized (enemyList) {
+				for(int i=0; i<itr; i++) {
+					enemyList.add(new Enemy(textPoly, SizeConvertRatio.getRatio()));
+				}
 			}
 		}
 	}
@@ -111,17 +122,19 @@ public class FlickDefenderLogic {
 				detectHpDown(enemy);
 				enemy.detectDead(context);
 			} else {
-				synchronized (enemyList) {
+//				synchronized (enemyList) {
 					enemyList.remove(enemy);
-				}
+//				}
 			}
 		}
 	}
 
-	public synchronized void addBullet(Bullet bullet) {
+	public void addBullet(Bullet bullet) {
 		// and add new bullet
 		if(bulletList.size() < GameParameters.getInstance().maxBulletAllowed) {
-			bulletList.add(bullet);
+//			synchronized (bulletList) {
+				bulletList.add(bullet);
+//			}
 		}
 
 		// Log.e(null, "size of bulletList: " + bulletList.size());
@@ -138,15 +151,14 @@ public class FlickDefenderLogic {
 				// detect dead
 				bullet.detectDead(context);
 			} else {
-				synchronized (bulletList) {
+//				synchronized (bulletList) {
 					bulletList.remove(bullet);
-				}
+//				}
 			}
 		}
 	}
 
 	public void drawExplodes() {
-		// for(ExplosionChar explode: explodeList) {
 		for (int i = 0; i < explodeList.size(); i++) {
 			ExplosionChar explode = explodeList.get(i);
 			// Log.e(null,"explode (" + i + ") status: " + explode.getStatus() +
@@ -156,28 +168,32 @@ public class FlickDefenderLogic {
 				explode.draw();
 				explode.incrementPos();
 			} else {
-				synchronized (explodeList) {
+//				synchronized (explodeList) {
 					explodeList.remove(explode);
-				}
+//				}
 			}
 		}
 	}
 
-	public synchronized void addExplode(ExplosionChar explode) {
-		// after the removal add new one
-		explodeList.add(explode);
+	public void addExplode(ExplosionChar explode) {
+//		synchronized (explodeList) {
+			// after the removal add new one
+			explodeList.add(explode);
+//		}
 	}
 
 	public void detectCollision(Bullet bullet) {
-		for (Enemy enemy : enemyList) {
+		for(int i=0; i<enemyList.size(); i++) {
+			Enemy enemy = enemyList.get(i);
 			if (enemy != null && !enemy.isDead()) {
 //				boolean iscollide = squareCollisionLogic(enemy, bullet);
 				boolean iscollide = circularCollisionLogic(enemy, bullet);
 				if (iscollide) {
 					// Log.e(null, "collision!");
 					// set deads and decrease timing
-					enemy.setDead(true);
-					bullet.setDead(true);
+					bulletEnemyHpDown(bullet, enemy);
+//					enemy.setDead(true);
+//					bullet.setDead(true);
 
 					// add explode animation
 					FlickDefenderLogic.getInstance(context).addExplode(
@@ -202,8 +218,10 @@ public class FlickDefenderLogic {
 	 * when user touch the screen.
 	 * 
 	 */
-	public synchronized void detectCollisionPerBullet() {
-		for (Bullet bullet : bulletList) {
+	public void detectCollisionPerBullet() {
+//		for (Bullet bullet : bulletList) {
+		for (int i=0; i<bulletList.size(); i++) {
+			Bullet bullet = bulletList.get(i);
 			if (bullet != null && !bullet.isDead()) {
 				detectCollision(bullet);
 			}
@@ -246,16 +264,38 @@ public class FlickDefenderLogic {
 		}
 		return false;
 	}
+	
+	public void bulletEnemyHpDown(Bullet bullet, Enemy enemy) {
+		int enemyRemHp = enemy.hp - bullet.str;
+		int bulletRemHp = bullet.hp - enemy.str;
+		
+		if (enemyRemHp <= 0) {
+			//death
+			enemy.setDead(true);
+			// get money
+			GameParameters.getInstance().currentTotalScore += enemy.getScore();
+		}
+		else {
+			enemy.hp = enemyRemHp;
+		}
+		
+		if (bulletRemHp <= 0) {
+			bullet.setDead(true);
+		}
+		else {
+			bullet.hp = bulletRemHp;
+		}
+	}
 
 	private void detectHpDown(Enemy enemy) {
 		if (enemy.getX() > 0 && enemy.getX() < FlickDefenderLogic.SCREEN_WIDTH
 				&& enemy.getY() > FlickDefenderLogic.SCREEN_HEIGHT) {
-			hp--;
+			hp -= enemy.getStr();
 
-			if (hp == 0) {
+			if (hp <= 0) {
 				status = GAME_OVER;
+				gameOverStart = System.currentTimeMillis();
 			}
-			Log.e(null, "hp down: " + hp);
 		}
 	}
 
@@ -270,7 +310,7 @@ public class FlickDefenderLogic {
 		}
 	}
 
-	public void displayGameOver(GL10 gl) {
+	public synchronized void displayGameOver(GL10 gl) {
 		String tickStr = "GAME OVER";
 		int w = (int) textPaint.measureText(tickStr);
 		int h = (int) (textPaint.descent() - textPaint.ascent());
@@ -281,7 +321,16 @@ public class FlickDefenderLogic {
 		textTexture = new TexturePolygon(context, bitmap);
 		textTexture.draw(FlickDefenderLogic.SCREEN_WIDTH / 2,
 				FlickDefenderLogic.SCREEN_HEIGHT / 2);
-		textTexture.delete();
+		if(textTexture != null) {
+			textTexture.delete();
+		}
+	}
+	
+	public boolean checkForRestartGame() {
+		if(System.currentTimeMillis()-gameOverStart >= GAME_OVER_CLICK_ENABLED_TIMING) {
+			return true;
+		}
+		return false;
 	}
 
 	public void displayHP(GL10 gl) {
@@ -307,7 +356,7 @@ public class FlickDefenderLogic {
 		textTexture.draw(40, 20);
 		textTexture.delete();
 	}
-
+	
 	public void tickTimer() {
 		tick++;
 
@@ -323,5 +372,4 @@ public class FlickDefenderLogic {
 	public static void setStatus(int status) {
 		FlickDefenderLogic.status = status;
 	}
-
 }

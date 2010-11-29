@@ -1,11 +1,19 @@
 package jp.arrow.angelforest.engine.core;
 
+import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
+import android.provider.OpenableColumns;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 
 /**
  * Abstract class that is used in AngelForestOpenGLActivity. This class will be
@@ -18,7 +26,7 @@ import android.view.MotionEvent;
  * 
  */
 public abstract class AngelforestRenderer implements Renderer {
-	public static int GAME_REFRESHRATE = 20;
+	public static int GAME_REFRESHRATE = 25;
 	private Context context;
 
 	public AngelforestRenderer(Context context) {
@@ -32,12 +40,11 @@ public abstract class AngelforestRenderer implements Renderer {
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		AngelForest2DEngine.init(gl, width, height);
-
 		initTextures(gl);
 
 		System.gc();
 	}
-
+	
 	/**
 	 * If theres any textures used in the application, use this method to
 	 * initialize them. otherwise, NullPointerException will occuer.
@@ -58,7 +65,7 @@ public abstract class AngelforestRenderer implements Renderer {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * When implementing a game, this method will do all the drawings. Think it
 	 * as a main screen.
@@ -76,6 +83,15 @@ public abstract class AngelforestRenderer implements Renderer {
 	 * @return
 	 */
 	public abstract boolean onTouchEvent(MotionEvent event);
+	
+	/**
+	 * This method will handle all the key event.
+	 * 
+	 * @param keyCode
+	 * @param event
+	 * @return
+	 */
+	public abstract boolean onKeyDown(int keyCode, KeyEvent event);
 
 	public Context getContext() {
 		return context;

@@ -4,7 +4,9 @@ import jp.angelforest.engine.util.SizeConvertRatio;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -40,6 +42,8 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 	
 	public void initGame() {
 		mGLSurfaceView = new GLSurfaceView(this);
+		SurfaceHolder holder = mGLSurfaceView.getHolder();
+		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
 		// renderer = new FlickDefenderRenderer(this);
 		setRenderer();
@@ -83,5 +87,18 @@ public abstract class AngelForestOpenGLActivity extends Activity {
 			return renderer.onTouchEvent(event);
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(renderer != null) {
+			return renderer.onKeyDown(keyCode, event);
+		}
+		
+		return true;
+	}
+
+	public GLSurfaceView getmGLSurfaceView() {
+		return mGLSurfaceView;
 	}
 }

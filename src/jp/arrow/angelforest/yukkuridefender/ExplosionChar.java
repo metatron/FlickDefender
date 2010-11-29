@@ -1,4 +1,4 @@
-package jp.arrow.angelforest.flickdefender;
+package jp.arrow.angelforest.yukkuridefender;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import android.content.Context;
 import android.hardware.Camera.Size;
 
 import jp.arrow.angelforest.engine.core.TexturePolygon;
+import jp.arrow.angelforest.yukkuridefender.R;
 
 public class ExplosionChar {
 	public static final int EXPLOSION_INIT = 0;
@@ -74,5 +75,18 @@ public class ExplosionChar {
 
 	public int getCurrentPos() {
 		return currentPos;
+	}
+	
+	public static void deleteExplodeChars() {
+		if(textureList != null && textureList.size() > 0) {
+			for(int i=0; i<textureList.size(); i++) {
+				TexturePolygon expText = textureList.get(i);
+				if(expText != null) {
+					expText.delete();
+				}
+			}
+			textureList.clear();
+			textureList = null;
+		}
 	}
 }

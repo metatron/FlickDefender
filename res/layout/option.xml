@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TableLayout android:id="@+id/TableLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="  Game Level"></TextView><RadioGroup android:id="@+id/RadioGroup01" android:layout_width="wrap_content" android:layout_height="wrap_content"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Normal" android:id="@+id/NormalRadioButton" android:checked="true"></RadioButton>
-<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hard" android:id="@+id/HardRadioButton"></RadioButton>
-<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hardest" android:id="@+id/HardestRadioButton"></RadioButton>
-<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lunatic" android:id="@+id/LunaticRadioButton"></RadioButton>
+<TableLayout android:id="@+id/TableLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+xmlns:android="http://schemas.android.com/apk/res/android" 
+xmlns:angelapp="http://schemas.android.com/apk/res/jp.arrow.angelforest.yukkuridefender"
+android:background="@android:color/white">
+<TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@android:color/black" android:text="@string/OptionTextViewTitle"></TextView><RadioGroup android:id="@+id/RadioGroup01" android:layout_width="wrap_content" android:layout_height="wrap_content"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Normal" android:id="@+id/NormalRadioButton" android:checked="true" android:textColor="@android:color/black"></RadioButton>
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hard" android:id="@+id/HardRadioButton" android:textColor="@android:color/black"></RadioButton>
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hardest" android:id="@+id/HardestRadioButton" android:textColor="@android:color/black"></RadioButton>
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lunatic" android:id="@+id/LunaticRadioButton" android:textColor="@android:color/black"></RadioButton>
 
 
-</RadioGroup><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OK" android:id="@+id/OptionOKButton"></Button>
+
+</RadioGroup><TableRow android:id="@+id/TableRow01" android:layout_width="wrap_content" android:layout_height="wrap_content"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ButtonStatusReset" android:text="@string/OptionButtonStatusReset"></Button>
+</TableRow><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OK" android:id="@+id/OptionOKButton"></Button>
+<com.admob.android.ads.AdView     
+           android:id="@+id/ad" 
+           android:layout_width="fill_parent" 
+           android:layout_height="wrap_content"
+           angelapp:backgroundColor="#000000"
+           angelapp:primaryTextColor="#FFFFFF"
+           angelapp:secondaryTextColor="#CCCCCC"
+  />
 </TableLayout>
+
